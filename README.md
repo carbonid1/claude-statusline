@@ -10,7 +10,6 @@ Atom One Dark color theme.
 
 - Model name and context window usage (color-coded)
 - Current directory and git branch with dirty indicator
-- Session duration
 - Thinking mode on/off
 - 5-hour and weekly rate limit bars with reset times
 - Weekly pace indicator (under/on/over expected usage)
