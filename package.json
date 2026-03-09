@@ -1,0 +1,21 @@
+{
+  "name": "@carbonid1/claude-statusline",
+  "version": "1.0.0",
+  "description": "A statusline for Claude Code showing model, context, rate limits with pace tracking, git info, and more",
+  "bin": {
+    "claude-statusline": "./bin/install.js"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "statusline",
+    "cli",
+    "rate-limits"
+  ],
+  "license": "MIT",
+  "author": "Andrew Luca",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/carbonid1/claude-statusline"
+  }
+}
