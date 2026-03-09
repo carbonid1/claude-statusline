@@ -3,11 +3,21 @@
 const fs = require("fs");
 const path = require("path");
 const os = require("os");
+const readline = require("readline");
 
 const CLAUDE_DIR = path.join(os.homedir(), ".claude");
 const SETTINGS_FILE = path.join(CLAUDE_DIR, "settings.json");
 const STATUSLINE_DEST = path.join(CLAUDE_DIR, "statusline.sh");
 const STATUSLINE_SRC = path.resolve(__dirname, "statusline.sh");
+const SKILL_SRC = path.resolve(
+  __dirname,
+  "..",
+  "skills",
+  "statusline",
+  "SKILL.md"
+);
+const SKILL_DIR = path.join(CLAUDE_DIR, "skills", "statusline");
+const SKILL_DEST = path.join(SKILL_DIR, "SKILL.md");
 
 const blue = "\x1b[38;2;97;175;239m";
 const green = "\x1b[38;2;152;195;121m";
@@ -30,6 +40,19 @@ function warn(msg) {
 
 function fail(msg) {
   console.error(`  ${red}x${reset} ${msg}`);
+}
+
+function ask(question) {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+  return new Promise((resolve) => {
+    rl.question(`  ${question} `, (answer) => {
+      rl.close();
+      resolve(answer.trim().toLowerCase());
+    });
+  });
 }
 
 function checkDeps() {
@@ -58,7 +81,9 @@ function uninstall() {
   if (fs.existsSync(backup)) {
     fs.copyFileSync(backup, STATUSLINE_DEST);
     fs.unlinkSync(backup);
-    success(`Restored previous statusline from ${dim}statusline.sh.bak${reset}`);
+    success(
+      `Restored previous statusline from ${dim}statusline.sh.bak${reset}`
+    );
   } else if (fs.existsSync(STATUSLINE_DEST)) {
     fs.unlinkSync(STATUSLINE_DEST);
     success(`Removed ${dim}statusline.sh${reset}`);
@@ -85,12 +110,20 @@ function uninstall() {
     }
   }
 
+  if (fs.existsSync(SKILL_DEST)) {
+    fs.unlinkSync(SKILL_DEST);
+    try {
+      fs.rmdirSync(SKILL_DIR);
+    } catch {}
+    success(`Removed statusline skill`);
+  }
+
   console.log();
   log(`${green}Done!${reset} Restart Claude Code to apply changes.`);
   console.log();
 }
 
-function install() {
+async function install() {
   console.log();
   log(`${blue}Claude Statusline Installer${reset}`);
   log(`${dim}${"─".repeat(27)}${reset}`);
@@ -150,6 +183,37 @@ function install() {
       JSON.stringify(settings, null, 2) + "\n"
     );
     success(`Updated ${dim}settings.json${reset}`);
+  }
+
+  // Skill installation — opt-in via prompt or flags
+  if (fs.existsSync(SKILL_SRC)) {
+    let installSkill = false;
+
+    if (process.argv.includes("--skill")) {
+      installSkill = true;
+    } else if (process.argv.includes("--no-skill")) {
+      installSkill = false;
+    } else {
+      console.log();
+      log(
+        `${dim}A Claude Code skill teaches Claude how to edit and extend your`
+      );
+      log(
+        `statusline — add per-project indicators, port checks, and more.${reset}`
+      );
+      const answer = await ask(
+        `Install the statusline editor skill? ${dim}(y/N)${reset}`
+      );
+      installSkill = answer === "y" || answer === "yes";
+    }
+
+    if (installSkill) {
+      fs.mkdirSync(SKILL_DIR, { recursive: true });
+      fs.copyFileSync(SKILL_SRC, SKILL_DEST);
+      success(`Installed skill to ${dim}${SKILL_DEST}${reset}`);
+    } else {
+      log(`${dim}Skipped skill — you can add it later with --skill${reset}`);
+    }
   }
 
   console.log();
