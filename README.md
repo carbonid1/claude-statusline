@@ -54,6 +54,8 @@ Restores your previous statusline from backup if available.
 
 Individual repos can extend the global statusline with project-specific indicators (server ports, env checks, build status, etc.) by adding a decorator script.
 
+![per-project demo](./.github/demo-project.png)
+
 1. Create `.claude/statusline.sh` in your project:
 
 ```bash
