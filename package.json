@@ -13,7 +13,7 @@
     "rate-limits"
   ],
   "license": "MIT",
-  "author": "Andrew Luca",
+  "author": "Andrew Korin",
   "repository": {
     "type": "git",
     "url": "https://github.com/carbonid1/claude-statusline"
