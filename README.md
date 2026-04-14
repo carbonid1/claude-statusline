@@ -1,5 +1,15 @@
 # claude-statusline
 
+> **⚠️ This repository has moved.**
+>
+> Active development continues at [**carbonid1/packages/tree/main/packages/claude-statusline**](https://github.com/carbonid1/packages/tree/main/packages/claude-statusline).
+>
+> The npm package is unchanged — install as before:
+>
+> ```bash
+> npx @carbonid1/claude-statusline
+> ```
+
 A statusline for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) showing model info, context usage, rate limits with pace tracking, git branch, and session duration.
 
 Atom One Dark color theme.
